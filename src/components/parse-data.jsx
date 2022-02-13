@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from "react";
-import StreamingHistory from './src/data/StreamingHistory0.json'
-import StreamingHistory1 from 'D:/Coding/spotify-data-reader/src/data/StreamingHistory1.json'
-import StreamingHistory2 from 'D:/Coding/spotify-data-reader/src/data/StreamingHistory2.json'
+import StreamingHistory from './../data/StreamingHistory0.json'
+import StreamingHistory1 from './../data/StreamingHistory1.json'
+import StreamingHistory2 from './../data/StreamingHistory2.json'
 
 const ParseData = () => {
 
