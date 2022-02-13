@@ -26,29 +26,40 @@ const ParseData = () => {
     )];
            
     let mappedData = []
+    let startDate = new Date();
+    let endDate = 0;
+
     unique.map((uniqueData) => {
                 let timeTemp = 0
                 let timesPlayedTemp = 0;
                 let artistName = '';
+
                 connectedData.filter(connectedData => connectedData.trackName === uniqueData)
-                .map((connectedData) => {
-                    timeTemp += connectedData.msPlayed;
-                    timesPlayedTemp += 1
-                    artistName = connectedData.artistName
-                })
+                    .map((connectedData) => {
+                        timeTemp += connectedData.msPlayed;
+                        timesPlayedTemp += 1;
+                        artistName = connectedData.artistName;
+
+                        let itemDate = new Date(connectedData.endTime);
+                        if (itemDate < startDate){
+                            startDate = itemDate;
+                        }
+                        if (itemDate > endDate){
+                            endDate = itemDate;
+                        }
+                    })
 
                 let dataObject = 
                     {
                         artistName: artistName,
-                        trackNname: uniqueData,
+                        trackName: uniqueData,
                         totalTime: (timeTemp / 60000).toFixed(2),
                         timesPlayed: timesPlayedTemp,
                     }
-                    mappedData.push(dataObject)
-                    
+                mappedData.push(dataObject)
             })
-    console.log(mappedData)
-
+            
+    let sortedData = [...mappedData].sort((a, b) => b.totalTime - a.totalTime)
 
     useEffect(() => {
 
@@ -70,21 +81,23 @@ const ParseData = () => {
     }, [])
 
     return ( 
-        <div className="data">
+        <div className="main">
 
-            <pre>
-            {
-            unique.map(item =>
-                item
-            )
-            
-            }
-            </pre>
+            <div className="dates">From: { startDate.toDateString('DD-MM-YYYY') } To: { endDate.toDateString() } </div>
+            <div className="list__wrapper">
+                {
+                    sortedData.map((item,i) => 
+                        <div className="list__item" key={ i }>
+                            <p className="number">#{ i+1 }</p>
+                            <p className="artistName">Artist name: { item.artistName }</p>
+                            <p className="trackName">Track name: { item.trackName }</p>
+                            <p className="totalTime">Total time listened: { item.totalTime } minutes</p>
+                            <p className="totalPlayed">Total times played: { item.timesPlayed }</p>
+                        </div>
+                    )
+                }
+            </div>
 
-            <p className="artistName">Artist name: { trackName }</p>
-            <p className="trackName">Track name: { artistName }</p>
-            <p className="totalTime">Total time listened: { totalTime.toFixed(2) } hours</p>
-            <p className="totalPlayed">Total times played: { totalPlayed }</p>
         </div>
      );
 }

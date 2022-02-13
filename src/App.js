@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './index.scss';
 import ParseData from './components/parse-data'
 
 function App() {
