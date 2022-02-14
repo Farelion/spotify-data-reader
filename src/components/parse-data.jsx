@@ -5,64 +5,95 @@ import StreamingHistory2 from './../data/StreamingHistory2.json'
 
 const ParseData = () => {
 
-    const [trackName, setTrackName] = useState('');
-    const [artistName, setArtistName] = useState('');
-    const [totalTime, setTotalTime] = useState(0);
-    const [totalPlayed, setTotalPlayed] = useState(0);
+    // const [trackName, setTrackName] = useState('');
+    // const [artistName, setArtistName] = useState('');
+    // const [totalTime, setTotalTime] = useState(0);
+    // const [totalPlayed, setTotalPlayed] = useState(0);
 
-    const [allData, setAllData] = useState([{
-        artistName: '',
-        trackNname: '',
-        totalTime: 0,
-        timesPlayed: 0,
-    }]);
-    
-    const connectedData = [...StreamingHistory, ...StreamingHistory1, ...StreamingHistory2]
+    // const [allData, setAllData] = useState([{
+    //     artistName: '',
+    //     trackNname: '',
+    //     totalTime: 0,
+    //     timesPlayed: 0,
+    // }]);
 
-    const unique = [...new Set(
-        connectedData.map(item =>
-             item.trackName 
-        )
-    )];
-           
-    let mappedData = []
-    let startDate = new Date();
-    let endDate = 0;
+    const [sortedData, setSortedData] = useState();
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
 
-    unique.map((uniqueData) => {
-                let timeTemp = 0
-                let timesPlayedTemp = 0;
-                let artistName = '';
 
-                connectedData.filter(connectedData => connectedData.trackName === uniqueData)
-                    .map((connectedData) => {
-                        timeTemp += connectedData.msPlayed;
-                        timesPlayedTemp += 1;
-                        artistName = connectedData.artistName;
+    let dataObject = [];
 
-                        let itemDate = new Date(connectedData.endTime);
-                        if (itemDate < startDate){
-                            startDate = itemDate;
-                        }
-                        if (itemDate > endDate){
-                            endDate = itemDate;
-                        }
-                    })
+    const handleChange = e => {
+        for (let i = 0; i < e.target.files.length; i++) {
+            let fileToLoad = e.target.files[i]
+            let fileReader = new FileReader();
 
-                let dataObject = 
-                    {
-                        artistName: artistName,
-                        trackName: uniqueData,
-                        totalTime: (timeTemp / 60000).toFixed(2),
-                        timesPlayed: timesPlayedTemp,
-                    }
-                mappedData.push(dataObject)
-            })
-            
-    let sortedData = [...mappedData].sort((a, b) => b.totalTime - a.totalTime)
+            fileReader.onload = function(fileLoadedEvent){
+                let textFromFileLoaded = fileLoadedEvent.target.result;
+                dataObject.push(JSON.parse(textFromFileLoaded));
+            };
+            fileReader.readAsText(fileToLoad, "UTF-8");
+        }
+        console.log(dataObject)
+    };
 
     useEffect(() => {
+        const connectedData = [dataObject]
+    
+        const unique = [...new Set(
+            connectedData.map(item =>
+                 item.trackName 
+            )
+        )];
+               
+        let mappedData = []
+        let startDate = new Date();
+        let endDate = new Date(0);
+    
+        unique.map((uniqueData) => {
+                    let timeTemp = 0
+                    let timesPlayedTemp = 0;
+                    let artistName = '';
+    
+                    connectedData.filter(connectedData => connectedData.trackName === uniqueData)
+                        .map((connectedData) => {
+                            timeTemp += connectedData.msPlayed;
+                            timesPlayedTemp += 1;
+                            artistName = connectedData.artistName;
+    
+                            let itemDate = new Date(connectedData.endTime);
+                            if (itemDate < startDate){
+                                startDate = itemDate;
+                            }
+                            if (itemDate > endDate){
+                                endDate = itemDate;
+                            }
+                        })
+    
+                    let dataObject = 
+                        {
+                            artistName: artistName,
+                            trackName: uniqueData,
+                            totalTime: (timeTemp / 60000).toFixed(2),
+                            timesPlayed: timesPlayedTemp,
+                        }
+                    mappedData.push(dataObject)
+                })
+                
+        let sortedData = [...mappedData].sort((a, b) => b.totalTime - a.totalTime)
+        setSortedData(sortedData);
+        setStartDate(startDate);
+        setEndDate(endDate);
+    }, [])
 
+    for (let i = 0; i < dataObject.length; i++) {
+
+    }
+
+    
+
+    // useEffect(() => {
         // let timeTemp = 0
         // let timesPlayedTemp = 0;
 
@@ -76,14 +107,16 @@ const ParseData = () => {
         // setArtistName('The Kid LAROI')
         // setTotalTime((timeTemp / 60000) / 60)
         // setTotalPlayed(timesPlayedTemp)
-
-
-    }, [])
+    // }, [])
 
     return ( 
         <div className="main">
-
-            <div className="dates">From: { startDate.toDateString('DD-MM-YYYY') } To: { endDate.toDateString() } </div>
+            <input type="file" name="filefield" multiple="multiple" onChange={handleChange} />
+    
+            <div className="dates">
+                <div className="dates_start">From: { startDate.toDateString('DD-MM-YYYY') } </div>
+                <div className="dates_end">To: { endDate.toDateString() }</div> 
+                </div>
             <div className="list__wrapper">
                 {
                     sortedData.map((item,i) => 
@@ -91,7 +124,7 @@ const ParseData = () => {
                             <p className="number">#{ i+1 }</p>
                             <p className="artistName">Artist name: { item.artistName }</p>
                             <p className="trackName">Track name: { item.trackName }</p>
-                            <p className="totalTime">Total time listened: { item.totalTime } minutes</p>
+                            <p className="totalTime">Total time listened: { item.totalTime } minutes ({ (item.totalTime / 60).toFixed((2)) }h) </p>
                             <p className="totalPlayed">Total times played: { item.timesPlayed }</p>
                         </div>
                     )

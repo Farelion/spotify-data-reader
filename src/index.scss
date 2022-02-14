@@ -19,7 +19,15 @@ code {
   width: 100%;
   height: 100%;
 }
-
+.dates{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  .dates_start{
+    margin-right: 10px;
+  }
+}
 .list__wrapper{
   display: flex;
   justify-content: space-around;
@@ -35,6 +43,14 @@ code {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    transition: 0.2s;
+    &:hover{
+      background-color: #35383c;
+      transition: 0.2s;
+    }
+    @media screen and (max-width: 768px) {
+      width: 80%;
+    }
     p{
       margin: 5px;
     }
