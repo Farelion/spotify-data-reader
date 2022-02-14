@@ -17,13 +17,14 @@ const ParseData = () => {
     //     timesPlayed: 0,
     // }]);
 
-    const [sortedData, setSortedData] = useState();
+    const [sortedData, setSortedData] = useState([]);
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
+    const [fileUploaded, setFileUploaded] = useState(false);
+
 
 
     let dataObject = [];
-
     const handleChange = e => {
         for (let i = 0; i < e.target.files.length; i++) {
             let fileToLoad = e.target.files[i]
@@ -31,75 +32,69 @@ const ParseData = () => {
 
             fileReader.onload = function(fileLoadedEvent){
                 let textFromFileLoaded = fileLoadedEvent.target.result;
-                dataObject.push(JSON.parse(textFromFileLoaded));
+                let fileParsed = JSON.parse(textFromFileLoaded)
+                fileParsed.map(item =>
+                    dataObject.push(item)
+                )
             };
             fileReader.readAsText(fileToLoad, "UTF-8");
         }
-        console.log(dataObject)
-
-
-        const connectedData = [dataObject]
-        console.log(connectedData)
-
-
-        if (connectedData){
-            const unique = [...new Set(
-                connectedData.map(item =>
-                     item.trackName 
-                )
-            )];
-        
-            let mappedData = []
-            let startDate = new Date();
-            let endDate = new Date(0);
-        
-            unique.map((uniqueData) => {
-                        let timeTemp = 0
-                        let timesPlayedTemp = 0;
-                        let artistName = '';
-        
-                        connectedData.filter(connectedData => connectedData.trackName === uniqueData)
-                            .map((connectedData) => {
-                                timeTemp += connectedData.msPlayed;
-                                timesPlayedTemp += 1;
-                                artistName = connectedData.artistName;
-        
-                                let itemDate = new Date(connectedData.endTime);
-                                if (itemDate < startDate){
-                                    startDate = itemDate;
-                                }
-                                if (itemDate > endDate){
-                                    endDate = itemDate;
-                                }
-                            })
-        
-                        let dataObject = 
-                            {
-                                artistName: artistName,
-                                trackName: uniqueData,
-                                totalTime: (timeTemp / 60000).toFixed(2),
-                                timesPlayed: timesPlayedTemp,
-                            }
-                        mappedData.push(dataObject)
-                    })
-                    
-            let sortedData = [...mappedData].sort((a, b) => b.totalTime - a.totalTime)
-            setSortedData(sortedData);
-            setStartDate(startDate);
-            setEndDate(endDate);
-        }
-
-
+        setFileUploaded(true);
     };
 
-    useEffect(() => {
-    }, [])
+    const mapData = () => {
+        const connectedData = [dataObject]
 
-    for (let i = 0; i < dataObject.length; i++) {
-
+        const unique = [...new Set(
+            connectedData[0].map(item =>
+                    item.trackName 
+            )
+        )];
+        let mappedData = []
+        let startDate = new Date();
+        let endDate = new Date(0);
+    
+        unique.map((uniqueData) => {
+                    let timeTemp = 0
+                    let timesPlayedTemp = 0;
+                    let artistName = '';
+    
+                    connectedData[0].filter(connectedData => connectedData.trackName === uniqueData)
+                        .map((connectedData) => {
+                            timeTemp += connectedData.msPlayed;
+                            timesPlayedTemp += 1;
+                            artistName = connectedData.artistName;
+    
+                            let itemDate = new Date(connectedData.endTime);
+                            if (itemDate < startDate){
+                                startDate = itemDate;
+                            }
+                            if (itemDate > endDate){
+                                endDate = itemDate;
+                            }
+                        })
+    
+                    let uniqueDataObject = {
+                            artistName: artistName,
+                            trackName: uniqueData,
+                            totalTime: (timeTemp / 60000).toFixed(2),
+                            timesPlayed: timesPlayedTemp,
+                        }
+                    mappedData.push(uniqueDataObject)
+                })
+                
+        let sortedData = [...mappedData].sort((a, b) => b.totalTime - a.totalTime)
+        setSortedData(sortedData);
+        setStartDate(startDate);
+        setEndDate(endDate);
     }
 
-    
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            mapData();
+        }, 5000)
+        return () => clearInterval(intervalId);
+    }, [])
 
     // useEffect(() => {
         // let timeTemp = 0
@@ -120,11 +115,19 @@ const ParseData = () => {
     return ( 
         <div className="main">
             <input type="file" name="filefield" multiple="multiple" onChange={handleChange} />
-    
 
+            <div className="dates"> 
+            {
+                fileUploaded === true &&
+                    'From: ' +
+                    startDate?.toDateString('DD-MM-YYYY') +
+                    ' To: ' +
+                    endDate?.toDateString() 
+            }
+            </div>
             <div className="list__wrapper">
                 {
-                    sortedData?.map((item,i) => 
+                    sortedData.map((item,i) => 
                         <div className="list__item" key={ i }>
                             <p className="number">#{ i+1 }</p>
                             <p className="artistName">Artist name: { item.artistName }</p>
