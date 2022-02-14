@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/spotify-data-reader/static/css/main.d5a9a6d9.css",
+    "main.js": "/spotify-data-reader/static/js/main.82cb0456.js",
+    "index.html": "/spotify-data-reader/index.html",
+    "main.d5a9a6d9.css.map": "/spotify-data-reader/static/css/main.d5a9a6d9.css.map",
+    "main.82cb0456.js.map": "/spotify-data-reader/static/js/main.82cb0456.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d5a9a6d9.css",
+    "static/js/main.82cb0456.js"
+  ]
+}
