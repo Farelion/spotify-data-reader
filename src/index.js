@@ -16,7 +16,7 @@ const rootElement = document.getElementById("root");
 ReactDOM.render(
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<App />} />
+      <Route path="/*" element={<App />} />
       <Route path="demo" element={<Demo />} />
       <Route path="how-it-works" element={<HowItWorks />} />
     </Routes>
