@@ -38,7 +38,7 @@ export default function HowItWorks() {
 
                     <div className="step">
                         <h2>#5 After upload</h2>
-                        <p>Now just wait until code process all your data and you will get your results!</p>
+                        <p>Now just wait until code processes all of your data and you will get your results!</p>
                         <p>Note: there are no servers, no data is stored anywhere, everything happens on client-side so no worries :D</p>
                     </div>
                 </div>
