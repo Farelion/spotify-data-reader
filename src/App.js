@@ -1,6 +1,7 @@
 import React from 'react';
-import './index.scss';
 import ParseData from './components/parse-data'
+import './index.scss';
+
 
 function App() {
   return (

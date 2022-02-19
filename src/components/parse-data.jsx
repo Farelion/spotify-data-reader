@@ -1,28 +1,11 @@
 import React, { useState, useEffect} from "react";
-import StreamingHistory from './../data/StreamingHistory0.json'
-import StreamingHistory1 from './../data/StreamingHistory1.json'
-import StreamingHistory2 from './../data/StreamingHistory2.json'
+import { Link } from "react-router-dom";
 
 const ParseData = () => {
-
-    // const [trackName, setTrackName] = useState('');
-    // const [artistName, setArtistName] = useState('');
-    // const [totalTime, setTotalTime] = useState(0);
-    // const [totalPlayed, setTotalPlayed] = useState(0);
-
-    // const [allData, setAllData] = useState([{
-    //     artistName: '',
-    //     trackNname: '',
-    //     totalTime: 0,
-    //     timesPlayed: 0,
-    // }]);
-
     const [sortedData, setSortedData] = useState([]);
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
     const [fileUploaded, setFileUploaded] = useState(false);
-
-
 
     let dataObject = [];
     const handleChange = e => {
@@ -96,25 +79,13 @@ const ParseData = () => {
         return () => clearInterval(intervalId);
     }, [])
 
-    // useEffect(() => {
-        // let timeTemp = 0
-        // let timesPlayedTemp = 0;
-
-        // connectedData.filter(data => data.trackName === "STAY (with Justin Bieber)")
-        //                 .map((data) => {
-        //                     timeTemp += data.msPlayed;
-        //                     timesPlayedTemp += 1
-        //                 })
-
-        // setTrackName('STAY (with Justin Bieber)')
-        // setArtistName('The Kid LAROI')
-        // setTotalTime((timeTemp / 60000) / 60)
-        // setTotalPlayed(timesPlayedTemp)
-    // }, [])
-
     return ( 
         <div className="main">
-            <input type="file" name="filefield" multiple="multiple" onChange={handleChange} />
+            <div className="nav">
+                <input className='fileinput' type="file" name="filefield" multiple="multiple" onChange={handleChange} />
+                <div className='nav__link'><Link to="/demo">Demo</Link></div>
+                <div className='nav__link'><Link to="/how-it-works">How it works</Link></div>
+            </div>
 
             <div className="dates"> 
             {
